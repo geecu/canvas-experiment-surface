@@ -1,4 +1,17 @@
+/*global fabric*/
+'use strict';
+
 (function() {
+  var size = 20;
+  var sizeWithPadding = size * 2.2;
+  var circles = [];
+  var animating = true;
+  var Point = fabric.Point;
+  var requestAnimFrame = fabric.util.requestAnimFrame;
+  var lastPoint = new Point(0, 0);
+  var directionX = 1;
+  var directionY = 1;
+
   var canvasEl = document.getElementById('c');
   canvasEl.setAttribute('width', window.innerWidth);
   canvasEl.setAttribute('height', window.innerHeight);
@@ -6,7 +19,7 @@
   var strengthEl = document.getElementById('strength');
   var speedEl = document.getElementById('speed');
 
-  var canvas = this.__canvas = new fabric.Canvas('c');
+  var canvas = new fabric.Canvas('c');
   canvas.selection = false;
 
   var resizeAll = function(p) {
@@ -22,7 +35,7 @@
       obj.set({radius: radius});
     });
     canvas.renderAll();
-  }
+  };
 
   var animationPausedTimeout;
   canvas.on('mouse:move', function(o) {
@@ -35,11 +48,8 @@
     animationPausedTimeout = setTimeout(function(){
       animating = true;
     }, 500);
-  })
+  });
 
-  var size = 20;
-  var sizeWithPadding = size * 2.2;
-  var circles = [];
   for (var i = 0; i < window.innerWidth / sizeWithPadding - 1; i++) {
     circles[i] = [];
     for (var j = 0; j < window.innerHeight / sizeWithPadding - 1; j++) {
@@ -47,23 +57,17 @@
         originX: size / 2,
         originY: size / 2,
         top: (j + 1) * sizeWithPadding,
-        left: (i+ 1) * sizeWithPadding,
+        left: (i + 1) * sizeWithPadding,
         radius: size,
         fill: '#B6D3DC'
       });
       circles[i].push(circle);
       circle.i = i;
       circle.j = j;
-      canvas.add(circle)
+      canvas.add(circle);
     }
   }
 
-  var animating = true;
-  var Point = fabric.Point;
-  var requestAnimFrame = fabric.util.requestAnimFrame;
-  var lastPoint = new Point(0, 0);
-  var directionX = 1;
-  var directionY = 1;
   var tick = function() {
     requestAnimFrame(tick);
 
@@ -75,13 +79,13 @@
     lastPoint.x += directionX * speed;
     lastPoint.y += directionY * speed;
     if (lastPoint.x > window.innerWidth || lastPoint.x < 0) {
-      directionX*= -1;
+      directionX *= -1;
     }
     if (lastPoint.y > window.innerHeight || lastPoint.y < 0) {
-      directionY*= -1;
+      directionY *= -1;
     }
     resizeAll(lastPoint);
-  }
+  };
 
   tick();
 })();
